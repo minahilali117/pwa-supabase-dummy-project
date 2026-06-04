@@ -4,17 +4,13 @@ import LunchPicker from '@/components/lunch-picker'
 import RecentPicks from '@/components/recent-picks'
 import RestaurantList from '@/components/restaurant-list'
 import AddRestaurantForm from '@/components/add-restaurant-form'
+import { signOut } from '@/app/actions'
 
 export default async function HomePage() {
-  console.log('HomePage rendering...')
   const supabase = await createClient()
-  console.log('Supabase client created')
 
-  const { data: { user }, error } = await supabase.auth.getUser()
-  console.log('User:', user?.email, 'Error:', error)
-  
+  const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
-  console.log('Past auth check')
 
   const { data: restaurants } = await supabase
     .from('restaurants')
@@ -29,18 +25,9 @@ export default async function HomePage() {
 
   const lastPick = picks?.[0] ?? null
 
-  async function signOut() {
-    'use server'
-    const supabase = await createClient()
-    await supabase.auth.signOut()
-    redirect('/login')
-  }
-
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="max-w-md mx-auto px-4 py-8">
-
-        {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold text-gray-900">🍔 Lunch Picker</h1>
           <form action={signOut}>
@@ -57,7 +44,6 @@ export default async function HomePage() {
         <RecentPicks picks={picks ?? []} />
         <RestaurantList restaurants={restaurants ?? []} />
         <AddRestaurantForm existingNames={(restaurants ?? []).map((r) => r.name)} />
-
       </div>
     </main>
   )
