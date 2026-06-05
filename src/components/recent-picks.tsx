@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { clearHistory } from '@/app/actions'
 import { useRouter } from 'next/navigation'
 import type { Pick } from '@/types'
 
@@ -12,8 +12,7 @@ export default function RecentPicks({ picks }: { picks: Pick[] }) {
 
   async function handleClearHistory() {
     setLoading(true)
-    const supabase = createClient()
-    await supabase.from('picks').delete().neq('id', '00000000-0000-0000-0000-000000000000')
+    await clearHistory()
     setLoading(false)
     setConfirming(false)
     router.refresh()

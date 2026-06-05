@@ -1,15 +1,14 @@
 'use client'
 
-import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { deleteRestaurant } from '@/app/actions'
 import type { Restaurant } from '@/types'
 
 export default function RestaurantList({ restaurants }: { restaurants: Restaurant[] }) {
   const router = useRouter()
 
   async function handleDelete(id: string) {
-    const supabase = createClient()
-    await supabase.from('restaurants').delete().eq('id', id)
+    await deleteRestaurant(id)
     router.refresh()
   }
 

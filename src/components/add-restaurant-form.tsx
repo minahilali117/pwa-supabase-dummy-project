@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { addRestaurant } from '@/app/actions'
 import { useRouter } from 'next/navigation'
 
 export default function AddRestaurantForm({ existingNames }: { existingNames: string[] }) {
@@ -27,11 +27,10 @@ export default function AddRestaurantForm({ existingNames }: { existingNames: st
     setLoading(true)
     setError(null)
 
-    const supabase = createClient()
-    const { error } = await supabase.from('restaurants').insert({ name: trimmed })
+    const result = await addRestaurant(trimmed)
 
-    if (error) {
-      setError(error.message)
+    if (result.error) {
+      setError(result.error)
       setLoading(false)
       return
     }

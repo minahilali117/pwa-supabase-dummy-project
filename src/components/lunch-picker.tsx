@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { savePick } from '@/app/actions'
 import { useRouter } from 'next/navigation'
 import type { Restaurant, Pick } from '@/types'
 
@@ -21,7 +21,6 @@ export default function LunchPicker({
   async function handlePick() {
     if (spinning) return
 
-    // Exclude last winner unless only one restaurant
     const pool =
       restaurants.length > 1
         ? restaurants.filter((r) => r.name !== lastPick?.restaurant_name)
@@ -34,7 +33,6 @@ export default function LunchPicker({
 
     const winner = pool[Math.floor(Math.random() * pool.length)]
 
-    // Cycle through names rapidly
     let elapsed = 0
     const totalDuration = 1800
     let interval = 80
@@ -45,19 +43,16 @@ export default function LunchPicker({
       elapsed += interval
 
       if (elapsed < totalDuration) {
-        // Gradually slow down in the last 600ms
         if (elapsed > totalDuration - 600) {
           interval = 180
         }
         intervalRef.current = setTimeout(cycle, interval)
       } else {
-        // Reveal winner
         setDisplayName(winner.name)
         setFinalPick(winner.name)
         setSpinning(false)
 
-        const supabase = createClient()
-        supabase.from('picks').insert({ restaurant_name: winner.name }).then(() => {
+        savePick(winner.name).then(() => {
           router.refresh()
         })
       }
