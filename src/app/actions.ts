@@ -20,6 +20,7 @@ export async function addRestaurant(name: string) {
   return { error: null }
 }
 
+
 export async function deleteRestaurant(id: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
