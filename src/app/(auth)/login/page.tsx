@@ -5,7 +5,16 @@ import { headers } from 'next/headers'
 export default async function LoginPage() {
   async function signInWithGoogle() {
     'use server'
-    const origin = (await headers()).get('origin')
+    const requestHeaders = await headers()
+    const forwardedHost =
+      requestHeaders.get('x-forwarded-host') ?? requestHeaders.get('host')
+    const forwardedProto = requestHeaders.get('x-forwarded-proto') ?? 'https'
+    const origin =
+      requestHeaders.get('origin') ??
+      (forwardedHost
+        ? `${forwardedProto}://${forwardedHost}`
+        : process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000')
+
     const supabase = await createClient()
     const { data } = await supabase.auth.signInWithOAuth({
       provider: 'google',
