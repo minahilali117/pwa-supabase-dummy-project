@@ -12,6 +12,8 @@ export async function signOut() {
 
 export async function addRestaurant(name: string) {
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
   const { error } = await supabase.from('restaurants').insert({ name })
   if (error) return { error: error.message }
   revalidatePath('/')
@@ -20,7 +22,9 @@ export async function addRestaurant(name: string) {
 
 export async function deleteRestaurant(id: string) {
   const supabase = await createClient()
-  await supabase.from('restaurants').delete().eq('id', id)
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return
+  await supabase.from('restaurants').delete().eq('id', id).eq('user_id', user.id)
   revalidatePath('/')
 }
 
