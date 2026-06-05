@@ -2,13 +2,11 @@
 
 import { useState } from 'react'
 import { addRestaurant } from '@/app/actions'
-import { useRouter } from 'next/navigation'
 
 export default function AddRestaurantForm({ existingNames }: { existingNames: string[] }) {
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const router = useRouter()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -37,7 +35,6 @@ export default function AddRestaurantForm({ existingNames }: { existingNames: st
 
     setName('')
     setLoading(false)
-    router.refresh()
   }
 
   return (

@@ -1,15 +1,11 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { deleteRestaurant } from '@/app/actions'
 import type { Restaurant } from '@/types'
 
 export default function RestaurantList({ restaurants }: { restaurants: Restaurant[] }) {
-  const router = useRouter()
-
   async function handleDelete(id: string) {
     await deleteRestaurant(id)
-    router.refresh()
   }
 
   return (

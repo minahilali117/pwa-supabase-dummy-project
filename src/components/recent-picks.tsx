@@ -2,20 +2,17 @@
 
 import { useState } from 'react'
 import { clearHistory } from '@/app/actions'
-import { useRouter } from 'next/navigation'
 import type { Pick } from '@/types'
 
 export default function RecentPicks({ picks }: { picks: Pick[] }) {
   const [confirming, setConfirming] = useState(false)
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
 
   async function handleClearHistory() {
     setLoading(true)
     await clearHistory()
     setLoading(false)
     setConfirming(false)
-    router.refresh()
   }
 
   return (

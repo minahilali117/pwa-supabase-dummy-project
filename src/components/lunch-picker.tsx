@@ -2,7 +2,6 @@
 
 import { useState, useRef } from 'react'
 import { savePick } from '@/app/actions'
-import { useRouter } from 'next/navigation'
 import type { Restaurant, Pick } from '@/types'
 
 export default function LunchPicker({
@@ -15,7 +14,6 @@ export default function LunchPicker({
   const [displayName, setDisplayName] = useState<string | null>(null)
   const [finalPick, setFinalPick] = useState<string | null>(null)
   const [spinning, setSpinning] = useState(false)
-  const router = useRouter()
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   async function handlePick() {
@@ -51,10 +49,7 @@ export default function LunchPicker({
         setDisplayName(winner.name)
         setFinalPick(winner.name)
         setSpinning(false)
-
-        savePick(winner.name).then(() => {
-          router.refresh()
-        })
+        savePick(winner.name)
       }
     }
 
